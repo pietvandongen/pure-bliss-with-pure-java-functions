@@ -1,0 +1,9 @@
+language: java
+sudo: required
+jdk:
+  - oraclejdk8
+install:
+  - ./gradlew build
+after_success:
+  - ./gradlew jacocoTestReport
+  - bash <(curl -s https://codecov.io/bash)

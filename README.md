@@ -8,6 +8,11 @@ tests and see what you would come up with.
 
 I'd love to get your feedback, cleaner code, pull requests, et cetera — we can learn a lot from each other!
 
+## Build status
+
+[![Build Status](https://travis-ci.org/pietvandongen/pure-bliss-with-pure-java-functions.svg?branch=master)](https://travis-ci.org/pietvandongen/pure-bliss-with-pure-java-functions)
+[![Codecov](https://img.shields.io/codecov/c/github/pietvandongen/pure-bliss-with-pure-java-functions.svg)](https://codecov.io/gh/pietvandongen/pure-bliss-with-pure-java-functions)
+
 ## How to run tests
 
 Use the self-contained [Gradle][1] command to run the tests:
