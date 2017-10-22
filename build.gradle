@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'java'
+
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.compilerArgs += '-parameters'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.11.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
+}
