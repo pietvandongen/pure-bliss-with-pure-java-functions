@@ -9,6 +9,7 @@ repositories {
 }
 
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 compileTestJava {
     sourceCompatibility = 1.8
@@ -25,6 +26,14 @@ test {
 dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.11.0'
+}
+
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
 }
 
 task wrapper(type: Wrapper) {
