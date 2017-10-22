@@ -16,4 +16,4 @@ Use the self-contained [Gradle][1] command to run the tests:
 ./gradlew clean test
 ```
 
-[1] https://gradle.org/
+[1]: https://gradle.org/
