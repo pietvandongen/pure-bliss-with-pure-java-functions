@@ -3,7 +3,7 @@ package com.pietvandongen.purebliss.offlinedetector.domain;
 import java.util.UUID;
 
 /**
- * Represents an IoT Device
+ * Represents an (Internet of Things) Device
  */
 public class Device {
 

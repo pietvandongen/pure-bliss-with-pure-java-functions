@@ -1,4 +1,4 @@
-package com.pietvandongen.purebliss.offlinedetector.job.round1;
+package com.pietvandongen.purebliss.offlinedetector.job.naive;
 
 import com.pietvandongen.purebliss.offlinedetector.domain.Device;
 import com.pietvandongen.purebliss.offlinedetector.job.OfflineDevicesJob;

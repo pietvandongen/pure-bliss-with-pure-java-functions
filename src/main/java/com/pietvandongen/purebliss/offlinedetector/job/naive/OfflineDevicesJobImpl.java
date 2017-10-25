@@ -1,4 +1,4 @@
-package com.pietvandongen.purebliss.offlinedetector.job.round1;
+package com.pietvandongen.purebliss.offlinedetector.job.naive;
 
 import com.pietvandongen.purebliss.offlinedetector.domain.Device;
 import com.pietvandongen.purebliss.offlinedetector.job.OfflineDevicesJob;
@@ -29,7 +29,7 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
             PushNotificationService pushNotificationService
     ) {
         if (clock == null || deviceService == null || pushNotificationService == null) {
-            throw new IllegalArgumentException("Clock, device service not push notification service can be null.");
+            throw new IllegalArgumentException("Clock, device service nor push notification service can be null.");
         }
 
         this.clock = clock;
