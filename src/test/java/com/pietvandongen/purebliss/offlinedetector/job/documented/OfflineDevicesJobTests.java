@@ -1,17 +1,11 @@
 package com.pietvandongen.purebliss.offlinedetector.job.documented;
 
-import com.pietvandongen.purebliss.offlinedetector.job.OfflineDevicesJob;
-import com.pietvandongen.purebliss.offlinedetector.service.DeviceService;
-import com.pietvandongen.purebliss.offlinedetector.service.PushNotificationService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,21 +21,7 @@ import static org.hamcrest.core.Is.is;
 @RunWith(Enclosed.class)
 public class OfflineDevicesJobTests {
 
-    @RunWith(MockitoJUnitRunner.class)
     public static class OfflineDevicesJobImplTests {
-
-        @Mock
-        private DeviceService deviceService;
-
-        @Mock
-        private PushNotificationService pushNotificationService;
-
-        private OfflineDevicesJob offlineDevicesJob;
-
-        @Before
-        public void setUp() {
-            offlineDevicesJob = new OfflineDevicesJobImpl(deviceService, pushNotificationService);
-        }
 
         @Test(expected = IllegalArgumentException.class)
         public void thatCalculateLastPassedThresholdThrowsExceptionWhenCurrentIsBeforeStart() {
