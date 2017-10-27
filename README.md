@@ -1,6 +1,6 @@
 # Pure bliss with pure (Java) functions
 
-This is the source code accompanying my blog post explaining the upside of using pure functions in Java.
+This is the source code accompanying my [blog post explaining the upside of using pure functions in Java][2].
 
 The best way to get an idea of what I'm trying to convey is to check out this project and tinker with it on your
 machine. For example, you could run the tests, edit the code and see what happens. Or maybe delete the code, leave the
@@ -22,3 +22,4 @@ Use the self-contained [Gradle][1] command to run the tests:
 ```
 
 [1]: https://gradle.org/
+[2]: https://arnhem.luminis.eu/pure-bliss-with-pure-functions-in-java/
