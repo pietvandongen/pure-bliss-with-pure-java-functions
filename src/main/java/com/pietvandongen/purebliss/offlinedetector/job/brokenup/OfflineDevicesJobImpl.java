@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class OfflineDevicesJobImpl implements OfflineDevicesJob {
 
@@ -58,7 +59,9 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
     static boolean shouldSendNotification(Instant jobStart, Instant deviceOffline, Instant lastNotification, List<Duration> thresholds) {
         Optional<Duration> lastPassedThreshold = calculateLastPassedThreshold(deviceOffline, jobStart, thresholds);
 
-        return lastPassedThreshold.isPresent() && (lastNotification.isBefore(deviceOffline) || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
+        return lastPassedThreshold.isPresent()
+            && (lastNotification.isBefore(deviceOffline)
+              || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
     }
 
     public void run() {
@@ -69,15 +72,22 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
         Instant jobStart = Instant.now();
 
         offlineDevices.entrySet().stream()
-                .filter(offlineDevice -> pushNotificationService
-                        .getLastOfflineNotificationInstant(offlineDevice.getKey())
-                        .map(instant -> shouldSendNotification(jobStart, offlineDevice.getValue(), instant, thresholds))
-                        .orElseGet(() -> shouldSendNotification(jobStart, offlineDevice.getValue(), thresholds))
-                )
-                .forEach(offlineDevice -> pushNotificationService.sendOfflineNotification(offlineDevice.getKey()));
+                .filter(shouldSendNotificationAfter(jobStart))
+                .map(Map.Entry::getKey)
+                .forEach(pushNotificationService::sendOfflineNotification);
     }
 
-    @Override
+  private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
+    return offlineDeviceEntry -> shouldSendNotification(jobStart, offlineDeviceEntry.getKey(), offlineDeviceEntry.getValue());
+  }
+
+  private boolean shouldSendNotification(Instant jobStart, Device device, Instant deviceOffline) {
+    return pushNotificationService.getLastOfflineNotificationInstant(device)
+          .map(notification -> shouldSendNotification(jobStart, deviceOffline, notification, thresholds))
+          .orElseGet(() -> shouldSendNotification(jobStart, deviceOffline, thresholds));
+  }
+
+  @Override
     public void onDeviceConnect(Device device) {
         this.offlineDevices.remove(device);
     }
