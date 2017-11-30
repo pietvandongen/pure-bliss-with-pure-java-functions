@@ -59,9 +59,13 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
     static boolean shouldSendNotification(Instant jobStart, Instant deviceOffline, Instant lastNotification, List<Duration> thresholds) {
         Optional<Duration> lastPassedThreshold = calculateLastPassedThreshold(deviceOffline, jobStart, thresholds);
 
-        return lastPassedThreshold.isPresent()
-                && (lastNotification.isBefore(deviceOffline)
-                || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
+        return lastPassedThreshold.isPresent() && (lastNotification.isBefore(deviceOffline) || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
+    }
+
+    private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
+        return offlineDevice -> pushNotificationService.getLastOfflineNotificationInstant(offlineDevice.getKey())
+                .map(notification -> shouldSendNotification(jobStart, offlineDevice.getValue(), notification, thresholds))
+                .orElseGet(() -> shouldSendNotification(jobStart, offlineDevice.getValue(), thresholds));
     }
 
     public void run() {
@@ -75,16 +79,6 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
                 .filter(shouldSendNotificationAfter(jobStart))
                 .map(Map.Entry::getKey)
                 .forEach(pushNotificationService::sendOfflineNotification);
-    }
-
-    private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
-        return offlineDeviceEntry -> shouldSendNotification(jobStart, offlineDeviceEntry.getKey(), offlineDeviceEntry.getValue());
-    }
-
-    private boolean shouldSendNotification(Instant jobStart, Device device, Instant deviceOffline) {
-        return pushNotificationService.getLastOfflineNotificationInstant(device)
-                .map(notification -> shouldSendNotification(jobStart, deviceOffline, notification, thresholds))
-                .orElseGet(() -> shouldSendNotification(jobStart, deviceOffline, thresholds));
     }
 
     @Override

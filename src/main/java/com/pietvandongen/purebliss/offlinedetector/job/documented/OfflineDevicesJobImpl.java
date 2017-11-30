@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * Runs a job periodically that sends out device offline push notifications if a device is offline for a certain
@@ -29,8 +30,8 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
     /**
      * Injects the job's dependencies and uses them to configure its initial state.
      *
-     * @param deviceService           The device service
-     * @param pushNotificationService
+     * @param deviceService           The device service.
+     * @param pushNotificationService The push notification service.
      */
     OfflineDevicesJobImpl(DeviceService deviceService, PushNotificationService pushNotificationService) {
         if (deviceService == null || pushNotificationService == null) {
@@ -102,6 +103,18 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
     }
 
     /**
+     * A predicate to determine if a notification should be sent at the given instant.
+     *
+     * @param jobStart The instant the job calling this function was started.
+     * @return The predicate, which returns true if a notification should be sent, false if not.
+     */
+    private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
+        return offlineDevice -> pushNotificationService.getLastOfflineNotificationInstant(offlineDevice.getKey())
+                .map(notification -> shouldSendNotification(jobStart, offlineDevice.getValue(), notification, thresholds))
+                .orElseGet(() -> shouldSendNotification(jobStart, offlineDevice.getValue(), thresholds));
+    }
+
+    /**
      * Sends push notifications for offline devices, once per passed threshold.
      */
     public void run() {
@@ -112,12 +125,9 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
         Instant jobStart = Instant.now();
 
         offlineDevices.entrySet().stream()
-                .filter(offlineDevice -> pushNotificationService
-                        .getLastOfflineNotificationInstant(offlineDevice.getKey())
-                        .map(instant -> shouldSendNotification(jobStart, offlineDevice.getValue(), instant, thresholds))
-                        .orElseGet(() -> shouldSendNotification(jobStart, offlineDevice.getValue(), thresholds))
-                )
-                .forEach(offlineDevice -> pushNotificationService.sendOfflineNotification(offlineDevice.getKey()));
+                .filter(shouldSendNotificationAfter(jobStart))
+                .map(Map.Entry::getKey)
+                .forEach(pushNotificationService::sendOfflineNotification);
     }
 
     @Override
