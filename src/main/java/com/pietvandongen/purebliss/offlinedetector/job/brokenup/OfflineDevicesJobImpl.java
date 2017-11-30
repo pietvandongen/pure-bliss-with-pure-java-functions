@@ -60,8 +60,8 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
         Optional<Duration> lastPassedThreshold = calculateLastPassedThreshold(deviceOffline, jobStart, thresholds);
 
         return lastPassedThreshold.isPresent()
-            && (lastNotification.isBefore(deviceOffline)
-              || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
+                && (lastNotification.isBefore(deviceOffline)
+                || !lastPassedThreshold.equals(calculateLastPassedThreshold(deviceOffline, lastNotification, thresholds)));
     }
 
     public void run() {
@@ -77,17 +77,17 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
                 .forEach(pushNotificationService::sendOfflineNotification);
     }
 
-  private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
-    return offlineDeviceEntry -> shouldSendNotification(jobStart, offlineDeviceEntry.getKey(), offlineDeviceEntry.getValue());
-  }
+    private Predicate<Map.Entry<Device, Instant>> shouldSendNotificationAfter(Instant jobStart) {
+        return offlineDeviceEntry -> shouldSendNotification(jobStart, offlineDeviceEntry.getKey(), offlineDeviceEntry.getValue());
+    }
 
-  private boolean shouldSendNotification(Instant jobStart, Device device, Instant deviceOffline) {
-    return pushNotificationService.getLastOfflineNotificationInstant(device)
-          .map(notification -> shouldSendNotification(jobStart, deviceOffline, notification, thresholds))
-          .orElseGet(() -> shouldSendNotification(jobStart, deviceOffline, thresholds));
-  }
+    private boolean shouldSendNotification(Instant jobStart, Device device, Instant deviceOffline) {
+        return pushNotificationService.getLastOfflineNotificationInstant(device)
+                .map(notification -> shouldSendNotification(jobStart, deviceOffline, notification, thresholds))
+                .orElseGet(() -> shouldSendNotification(jobStart, deviceOffline, thresholds));
+    }
 
-  @Override
+    @Override
     public void onDeviceConnect(Device device) {
         this.offlineDevices.remove(device);
     }
