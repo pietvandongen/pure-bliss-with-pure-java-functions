@@ -11,7 +11,7 @@ I'd love to get your feedback, cleaner code, pull requests, et cetera — we can
 ## Build status
 
 [![Build Status](https://travis-ci.org/pietvandongen/pure-bliss-with-pure-java-functions.svg?branch=master)](https://travis-ci.org/pietvandongen/pure-bliss-with-pure-java-functions)
-[![Codecov](https://img.shields.io/codecov/c/github/pietvandongen/pure-bliss-with-pure-java-functions.svg)](https://codecov.io/gh/pietvandongen/pure-bliss-with-pure-java-functions)
+[![codecov](https://codecov.io/gh/pietvandongen/pure-bliss-with-pure-java-functions/branch/master/graph/badge.svg)](https://codecov.io/gh/pietvandongen/pure-bliss-with-pure-java-functions)
 
 ## How to run tests
 
