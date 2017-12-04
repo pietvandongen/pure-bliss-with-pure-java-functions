@@ -43,7 +43,7 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
             return Optional.empty();
         }
 
-        for (int i = 0; i < thresholds.size(); i++) {
+        for (int i = 1; i < thresholds.size(); i++) {
             if (timePassed.compareTo(thresholds.get(i)) <= 0) {
                 return Optional.of(thresholds.get(i - 1));
             }
