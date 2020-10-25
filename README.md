@@ -22,4 +22,4 @@ Use the self-contained [Gradle][1] command to run the tests:
 ```
 
 [1]: https://gradle.org/
-[2]: https://arnhem.luminis.eu/pure-bliss-with-pure-functions-in-java/
+[2]: https://sharing.luminis.eu/blog/pure-bliss-with-pure-functions-in-java/
