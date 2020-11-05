@@ -33,23 +33,35 @@ public class OfflineDevicesJobImpl implements OfflineDevicesJob {
     }
 
     static Optional<Duration> calculateLastPassedThreshold(Instant start, Instant current, List<Duration> thresholds) {
-        if (current.isBefore(start) || start.equals(current) || thresholds == null || thresholds.isEmpty()) {
+        if (isStartAfterCurrent(start, current) || noTresholds(thresholds)) {
             throw new IllegalArgumentException("Start must be before current and there should be at least 1 threshold");
         }
 
         Duration timePassed = Duration.between(start, current);
 
-        if (timePassed.compareTo(thresholds.get(0)) <= 0) {
+        if (tresholdAfterTimePassed((Duration) timePassed, thresholds.get(0))) {
             return Optional.empty();
         }
 
         for (int i = 1; i < thresholds.size(); i++) {
-            if (timePassed.compareTo(thresholds.get(i)) <= 0) {
+            if (tresholdAfterTimePassed(timePassed, thresholds.get(i))) {
                 return Optional.of(thresholds.get(i - 1));
             }
         }
 
         return Optional.of(thresholds.get(thresholds.size() - 1));
+    }
+
+    private static boolean noTresholds(List<Duration> thresholds) {
+        return thresholds == null || thresholds.isEmpty();
+    }
+
+    private static boolean isStartAfterCurrent(Instant start, Instant current) {
+        return current.isBefore(start) || start.equals(current);
+    }
+
+    private static boolean tresholdAfterTimePassed(Duration timePassed, Duration threshold) {
+        return timePassed.compareTo(threshold) <= 0;
     }
 
     static boolean shouldSendNotification(Instant jobStart, Instant deviceOffline, List<Duration> thresholds) {
